@@ -99,51 +99,6 @@ class patchwork_preprocessor__0
 			self::$declaredClass[$v] = 1;
 		}
 
-		if (IS_WINDOWS)
-		{
-			self::$functionAlias += array(
-				'chgrp'             => 'WIN::chgrp',
-				'chmod'             => 'WIN::chmod',
-				'chown'             => 'WIN::chown',
-				'copy'              => 'WIN::copy',
-				'file_exists'       => 'WIN::file_exists',
-				'file_get_contents' => 'WIN::file_get_contents',
-				'file_put_contents' => 'WIN::file_put_contents',
-				'file'              => 'WIN::file',
-				'fileatime'         => 'WIN::fileatime',
-				'filectime'         => 'WIN::filectime',
-				'filegroup'         => 'WIN::filegroup',
-				'fileinode'         => 'WIN::fileinode',
-				'filemtime'         => 'WIN::filemtime',
-				'fileowner'         => 'WIN::fileowner',
-				'fileperms'         => 'WIN::fileperms',
-				'filesize'          => 'WIN::filesize',
-				'filetype'          => 'WIN::filetype',
-				'fopen'             => 'WIN::fopen',
-				'is_dir'            => 'WIN::is_dir',
-				'is_executable'     => 'WIN::is_executable',
-				'is_file'           => 'WIN::is_file',
-				'is_readable'       => 'WIN::is_readable',
-				'is_writable'       => 'WIN::is_writable',
-				'is_writeable'      => 'WIN::is_writeable',
-				'mkdir'             => 'WIN::mkdir',
-				'parse_ini_file'    => 'WIN::parse_ini_file',
-				'readfile'          => 'WIN::readfile',
-				'realpath'          => 'WIN::realpath',
-				'rename'            => 'WIN::rename',
-				'rmdir'             => 'WIN::rmdir',
-				'stat'              => 'WIN::stat',
-				'touch'             => 'WIN::touch',
-				'unlink'            => 'WIN::unlink',
-				'dir'               => 'WIN::dir',
-				'closedir'          => 'WIN::closedir',
-				'opendir'           => 'WIN::opendir',
-				'readdir'           => 'WIN::readdir',
-				'rewinddir'         => 'WIN::rewinddir',
-				'scandir'           => 'WIN::scandir',
-			);
-		}
-
 		$v = get_defined_constants(true);
 		unset(
 			$v['user'],

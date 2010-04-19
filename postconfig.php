@@ -35,59 +35,49 @@ unset($CONFIG['debug.allowed'], $CONFIG['debug.password'], $CONFIG['turbo']);
 isset($CONFIG['umask']) && umask($CONFIG['umask']);
 
 
-// file_exists replacement on Windows
-// Fix a bug with long file names
-// In debug mode, checks if character case is strict.
+// Unicode aware filesystem access on Windows
 
-/**/if (IS_WINDOWS && !function_exists('__patchwork_realpath'))
+/**/if (IS_WINDOWS)
 /**/{
-		if (/*<*/version_compare(PHP_VERSION, '5.2', '<')/*>*/ || DEBUG)
-		{
-/**/		patchwork_bootstrapper::alias('file_exists',   'patchwork_file_exists',   array('$file'));
-/**/		patchwork_bootstrapper::alias('is_file',       'patchwork_is_file',       array('$file'));
-/**/		patchwork_bootstrapper::alias('is_dir',        'patchwork_is_dir',        array('$file'));
-/**/		patchwork_bootstrapper::alias('is_link',       'patchwork_is_link',       array('$file'));
-/**/		patchwork_bootstrapper::alias('is_executable', 'patchwork_is_executable', array('$file'));
-/**/		patchwork_bootstrapper::alias('is_readable',   'patchwork_is_readable',   array('$file'));
-/**/		patchwork_bootstrapper::alias('is_writable',   'patchwork_is_writable',   array('$file'));
-
-			if (DEBUG)
-			{
-				function patchwork_file_exists($file)
-				{
-					if (file_exists($file) && $realfile = realpath($file))
-					{
-						$file = strtr($file, '/', '\\');
-
-						$i = strlen($file);
-						$j = strlen($realfile);
-
-						while ($i-- && $j--)
-						{
-							if ($file[$i] != $realfile[$j])
-							{
-								if (0 === strcasecmp($file[$i], $realfile[$j]) && !(0 === $i && ':' === substr($file, 1, 1))) trigger_error("Character case mismatch between requested file and its real path ({$file} vs {$realfile})");
-								break;
-							}
-						}
-
-						return true;
-					}
-					else return false;
-				}
-			}
-			else
-			{
-				function patchwork_file_exists($file) {return file_exists($file) && (!isset($file[99]) || realpath($file));}
-			}
-
-			function patchwork_is_file($file)       {return patchwork_file_exists($file) && is_file($file);}
-			function patchwork_is_dir($file)        {return patchwork_file_exists($file) && is_dir($file);}
-			function patchwork_is_link($file)       {return patchwork_file_exists($file) && is_link($file);}
-			function patchwork_is_executable($file) {return patchwork_file_exists($file) && is_executable($file);}
-			function patchwork_is_readable($file)   {return patchwork_file_exists($file) && is_readable($file);}
-			function patchwork_is_writable($file)   {return patchwork_file_exists($file) && is_writable($file);}
-		}
+/**/	patchwork_bootstrapper::alias('chgrp',             'WIN::chgrp',             array('$f', '$group'));
+/**/	patchwork_bootstrapper::alias('chmod',             'WIN::chmod',             array('$f', '$mode'));
+/**/	patchwork_bootstrapper::alias('chown',             'WIN::chown',             array('$f', '$user'));
+/**/	patchwork_bootstrapper::alias('copy',              'WIN::copy',              array('$from', '$to', '$context' => null));
+/**/	patchwork_bootstrapper::alias('file_exists',       'WIN::file_exists',       array('$f'));
+/**/	patchwork_bootstrapper::alias('file_get_contents', 'WIN::file_get_contents', array('$f', '$use_include_path' => false, '$context' => null, '$offset' => 0, '$maxlen' => null));
+/**/	patchwork_bootstrapper::alias('file_put_contents', 'WIN::file_put_contents', array('$f', '$data', '$use_include_path' => false, '$context' => null));
+/**/	patchwork_bootstrapper::alias('file',              'WIN::file',              array('$f', '$use_include_path' => false, '$context' => null));
+/**/	patchwork_bootstrapper::alias('fileatime',         'WIN::fileatime',         array('$f'));
+/**/	patchwork_bootstrapper::alias('filectime',         'WIN::filectime',         array('$f'));
+/**/	patchwork_bootstrapper::alias('filegroup',         'WIN::filegroup',         array('$f'));
+/**/	patchwork_bootstrapper::alias('fileinode',         'WIN::fileinode',         array('$f'));
+/**/	patchwork_bootstrapper::alias('filemtime',         'WIN::filemtime',         array('$f'));
+/**/	patchwork_bootstrapper::alias('fileowner',         'WIN::fileowner',         array('$f'));
+/**/	patchwork_bootstrapper::alias('fileperms',         'WIN::fileperms',         array('$f'));
+/**/	patchwork_bootstrapper::alias('filesize',          'WIN::filesize',          array('$f'));
+/**/	patchwork_bootstrapper::alias('filetype',          'WIN::filetype',          array('$f'));
+/**/	patchwork_bootstrapper::alias('fopen',             'WIN::fopen',             array('$f', '$mode', '$use_include_path' => false, '$context' => null));
+/**/	patchwork_bootstrapper::alias('is_dir',            'WIN::is_dir',            array('$f'));
+/**/	patchwork_bootstrapper::alias('is_executable',     'WIN::is_executable',     array('$f'));
+/**/	patchwork_bootstrapper::alias('is_file',           'WIN::is_file',           array('$f'));
+/**/	patchwork_bootstrapper::alias('is_readable',       'WIN::is_readable',       array('$f'));
+/**/	patchwork_bootstrapper::alias('is_writable',       'WIN::is_writable',       array('$f'));
+/**/	patchwork_bootstrapper::alias('is_writeable',      'WIN::is_writeable',      array('$f'));
+/**/	patchwork_bootstrapper::alias('mkdir',             'WIN::mkdir',             array('$dir', '$mode' => 0777, '$recursive' => false, '$context' => null));
+/**/	patchwork_bootstrapper::alias('parse_ini_file',    'WIN::parse_ini_file',    array('$f', '$process_sections' => false));
+/**/	patchwork_bootstrapper::alias('readfile',          'WIN::readfile',          array('$f', '$use_include_path' => false, '$context' => null));
+/**/	patchwork_bootstrapper::alias('realpath',          'WIN::realpath',          array('$f'));
+/**/	patchwork_bootstrapper::alias('rename',            'WIN::rename',            array('$from', '$to', '$context' => null));
+/**/	patchwork_bootstrapper::alias('rmdir',             'WIN::rmdir',             array('$f', '$context' => null));
+/**/	patchwork_bootstrapper::alias('stat',              'WIN::stat',              array('$f'));
+/**/	patchwork_bootstrapper::alias('touch',             'WIN::touch',             array('$f', '$time' => null, '$atime' => null));
+/**/	patchwork_bootstrapper::alias('unlink',            'WIN::unlink',            array('$f', '$context' => null));
+/**/	patchwork_bootstrapper::alias('dir',               'WIN::dir',               array('$f'));
+/**/	patchwork_bootstrapper::alias('closedir',          'WIN::closedir',          array('$d' => null));
+/**/	patchwork_bootstrapper::alias('opendir',           'WIN::opendir',           array('$f', '$context' => null));
+/**/	patchwork_bootstrapper::alias('readdir',           'WIN::readdir',           array('$d' => null));
+/**/	patchwork_bootstrapper::alias('rewinddir',         'WIN::rewinddir',         array('$d' => null));
+/**/	patchwork_bootstrapper::alias('scandir',           'WIN::scandir',           array('$f', '$sorting_order' => 0, '$context' => null));
 /**/}
 
 
