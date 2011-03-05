@@ -41,8 +41,18 @@ function_exists('mb_internal_encoding')
 	&& mb_internal_encoding('8bit') // if mbstring overloading is enabled
 	&& @ini_set('mbstring.internal_encoding', '8bit');
 
-
-require dirname(__FILE__) . '/class/patchwork/bootstrapper.php';
+function __autoload($class)
+{
+	if (isset($GLOBALS['patchwork_autoloader']))
+	{
+		call_user_func($GLOBALS['patchwork_autoloader'], $class);
+	}
+	else
+	{
+		$class = dirname(__FILE__) . '/class/' . strtr($class, '_\\', '//') . '.php';
+		if (file_exists($class)) include $class;
+	}
+}
 
 patchwork_bootstrapper::initialize(__FILE__, PATCHWORK_BOOTPATH);
 
