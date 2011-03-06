@@ -18,7 +18,6 @@ class patchwork_bootstrapper
 
 	$pwd,
 	$cwd,
-	$token = '',
 	$paths,
 	$zcache,
 	$last,
@@ -37,7 +36,7 @@ class patchwork_bootstrapper
 		self::$cwd = rtrim(self::$cwd, '/\\') . DIRECTORY_SEPARATOR;
 		self::$pwd = dirname($caller) . DIRECTORY_SEPARATOR;
 		self::$caller = $caller;
-		self::$bootstrapper = new patchwork_bootstrapper_bootstrapper(self::$cwd, self::$token);
+		self::$bootstrapper = new patchwork_bootstrapper_bootstrapper(self::$cwd);
 	}
 
 	static function getLock()             {return self::$bootstrapper->getLock(self::$caller);}
